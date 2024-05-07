@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 
 import styles from './page.module.css';
@@ -22,9 +22,15 @@ const ComponentOne = () => {
     );
 };
 
-const ComponentTwo = () => {
-    const { data } = useSWR('custom_key_2', () => fetchOnePost({ delayMS: 2000 }));
-    //...some logic
+const ComponentTwo = ({ showComponentTwo }) => {
+    const [shouldFetch, setShouldFetch] = useState(false);
+    const { data } = useSWR(shouldFetch ? 'custom_key_2' : null, () => fetchOnePost({ delayMS: 2000 }));
+
+    useEffect(() => {
+        if (showComponentTwo) {
+            setShouldFetch(true);
+        }
+    }, [showComponentTwo]);
 
     return data ? (
         <div className={styles.card}>
@@ -44,9 +50,8 @@ export default function Home() {
         <main className={styles.main}>
             <div className={styles.description}>
                 <ComponentOne />
-                {showComponentTwo ? (
-                    <ComponentTwo />
-                ) : (
+                <ComponentTwo showComponentTwo={showComponentTwo} />
+                {!showComponentTwo && (
                     <button className={styles.btn} onClick={() => setShowComponentTwo(true)}>
                         Show ComponentTwo
                     </button>
