@@ -44,4 +44,15 @@ const BALLONS: { [key: string]: BallonI } = {
 	},
 };
 
-// Ваш код здесь
+const Main = async () => {
+    const publicBallons = Object.values(BALLONS).filter(ballon => ballon.isPublic);
+
+    try {
+        const ballonAmounts = await Promise.all(publicBallons.map(ballon => fetchBallonAmount(ballon.id)));
+        const totalAmount = ballonAmounts.reduce((acc, num) => acc + num, 0);
+        return totalAmount;
+    } catch (error) {
+        console.error("An error occurred while fetching ballon amounts:", error);
+        return 0; // Возвращаем 0 в случае ошибки
+    }
+};
