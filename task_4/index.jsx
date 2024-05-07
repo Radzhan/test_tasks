@@ -1,48 +1,38 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 
-export const Block1 = ({ mouseEnterCallbak, imgSrc, imgAlt }) => {
+const Block = ({ mouseEnterCallback, children }) => {
   const [isActive, setActive] = useState(false);
 
-  const mouseEnterHandler = () => {
+  const mouseEnterHandler = useCallback(() => {
     setActive(true);
-    mouseEnterCallbak();
-  };
+    mouseEnterCallback();
+  }, [mouseEnterCallback]);
+
+  const className = useMemo(() => (isActive ? "active" : ""), [isActive]);
 
   return (
-    <div onMouseEnter={mouseEnterHandler} className={isActive ? "active" : ""}>
-      <img src={imgSrc} alt={imgAlt} />
+    <div onMouseEnter={mouseEnterHandler} className={className}>
+      {children}
     </div>
   );
 };
 
-export const Block2 = ({ mouseEnterCallbak, content }) => {
-  const [isActive, setActive] = useState(false);
+export const Block1 = ({ mouseEnterCallback, imgSrc, imgAlt }) => (
+  <Block mouseEnterCallback={mouseEnterCallback}>
+    <img src={imgSrc} alt={imgAlt} />
+  </Block>
+);
 
-  const mouseEnterHandler = () => {
-    setActive(true);
-    mouseEnterCallbak();
-  };
+export const Block2 = ({ mouseEnterCallback, content }) => (
+  <Block mouseEnterCallback={mouseEnterCallback}>
+    <p>{content}</p>
+  </Block>
+);
 
-  return (
-    <div onMouseEnter={mouseEnterHandler} className={isActive ? "active" : ""}>
-      <p>{content}</p>
-    </div>
-  );
-};
-
-export const Block3 = ({ mouseEnterCallbak, userData }) => {
-  const [isActive, setActive] = useState(false);
-
-  const mouseEnterHandler = () => {
-    setActive(true);
-    mouseEnterCallbak();
-  };
-
-  return (
-    <div onMouseEnter={mouseEnterHandler} className={isActive ? "active" : ""}>
-      <address>
-        country: {userData.country}, street: {userData.street}
-      </address>
-    </div>
-  );
-};
+export const Block3 = ({ mouseEnterCallback, userData }) => (
+  <Block mouseEnterCallback={mouseEnterCallback}>
+    <address>
+      country: {userData.country}, street: {userData.street}
+    </address>
+  </Block>
+);
